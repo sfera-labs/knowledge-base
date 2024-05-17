@@ -11,6 +11,4 @@ In Ubuntu the Device Tree files are located in `/boot/firmware/overlays/`, rathe
     dtc -@ -Hepapr -I dts -O dtb -o <MODULE_NAME>.dtbo <MODULE_NAME>.dts
     sudo cp <MODULE_NAME>.dtbo /boot/firmware/overlays/
 
-Finally, the `/boot/config.txt` file in RPi OS, corresponds to `/boot/firmware/config.txt` in Ubuntu. Add the `dtoverlay=<MODULE_NAME>` line there to enable the module.
-
 All the other installation steps and usage of the `/sys/class/` files are the same.
