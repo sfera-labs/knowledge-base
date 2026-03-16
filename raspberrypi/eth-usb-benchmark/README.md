@@ -13,7 +13,7 @@ The benchmark compares:
 
 ## Test Method
 
-- Up to two independent servers generate data in memory and stream it to the clients.
+- Up to two independent servers generate data in memory and stream it to the client.
 - The client connects to one or two servers through different interfaces.
 - For each interface, the client counts the total number of received bytes during the test.
 - Throughput is reported as sustained **TCP bandwidth (Mbps)** measured on the client.
@@ -21,7 +21,7 @@ The benchmark compares:
 
 ## Test Setup
 
-Servers and clients use Raspberry Pi OS (64-bit), Linux kernel 6.12.
+Servers and clients run Raspberry Pi OS (64-bit), Linux kernel 6.12.
 
 ### Servers
 
@@ -51,7 +51,7 @@ Benchmark script: [eth_speed_client.py](./eth_speed_client.py)
 
 Usage:
 
-```bash
+```
 sudo python3 eth_speed_client.py <INTERFACE> <STREAMS> <SECONDS>
 ```
 
@@ -60,12 +60,12 @@ The script automatically configures the static IP address `10.55.0.2` and uses m
 
 ## Test Configurations
 
-| ID | Connection |
-|:--:|------------|
-| `ETH` | Direct - Ethernet cable only |
-| `USB` | Ethernet cable connected to client through USB Ethernet adapter |
-| `HUB` | Ethernet cable connected to client through USB Ethernet adapter + USB hub |
-| `X`+`Y` | Parallel test with configurations `X` and `Y` from one of the above |
+|    ID   | Connection                                                    |
+| :-----: | ------------------------------------------------------------- |
+|  `ETH`  | Direct Ethernet connection                                    |
+|  `USB`  | Ethernet via USB Ethernet adapter                             |
+|  `HUB`  | Ethernet via USB Ethernet adapter connected through a USB hub |
+| `X`+`Y` | Parallel test with configurations `X` and `Y` from above      |
 
 Ethernet cable: Cat 5e UTP
 
@@ -84,19 +84,19 @@ Results may vary depending on system load, USB devices, kernel version, and adap
 
 ### Raspberry Pi 5
 
-| Configuration | Interface(s) | Throughput (Mbps) |
-|:-------------:|--------------|-------------------|
-| `ETH` | Gigabit Ethernet | 936 |
-| `USB` | USB 2.0 | 93.5 |
-| `USB` | USB 3.0 | 800 |
-| `ETH`+`USB` | Gigabit Ethernet + USB 3.0 | 900 + 700 |
+| Configuration | Interface(s)               | Throughput (Mbps) |
+| :-----------: | -------------------------- | ----------------- |
+|     `ETH`     | Gigabit Ethernet           | TODO              |
+|     `USB`     | USB 2.0                    | TODO              |
+|     `USB`     | USB 3.0                    | TODO              |
+|  `ETH`+`USB`  | Gigabit Ethernet + USB 3.0 | TODO + TODO       |
 
-### Strato Pi Max with CM 5
+### Strato Pi Max with CM5
 
-| Configuration | Interface(s) | Throughput (Mbps) |
-|:-------------:|--------------|-------------------|
-| `ETH` | LAN1 (Gigabit Ethernet) | 936 |
-| `ETH` | LAN2 (10/100 Ethernet) | 93.5 |
-| `USB` | USB1 (USB 2.0) | 93.5 |
-| `HUB` | USB1 (USB 2.0) | 93.5 |
-| `ETH`+`USB` | LAN1 + USB1 | 900 + 90 |
+| Configuration | Interface(s)            | Throughput (Mbps) |
+| :-----------: | ----------------------- | ----------------- |
+|     `ETH`     | LAN1 (Gigabit Ethernet) | 936               |
+|     `ETH`     | LAN2 (10/100 Ethernet)  | 93.5              |
+|     `USB`     | USB1 (USB 2.0)          | 93.5              |
+|     `HUB`     | USB1 (USB 2.0)          | 93.5              |
+|  `ETH`+`USB`  | LAN1 + USB1             | TODO + TODO       |
