@@ -38,10 +38,20 @@ Benchmark script: [eth_speed_server.py](./eth_speed_server.py)
 Usage:
 
 ```
-sudo python3 eth_speed_server.py eth0
+sudo python3 eth_speed_server.py <INTERFACE> <SERVER_IP> [PORT]
 ```
 
-The script automatically configures the static IP address `10.55.0.1`.
+The script configures the specified static IP address on the selected interface.
+
+Example, two servers:
+
+```
+sudo python3 eth_speed_server.py eth0 10.55.0.1
+```
+
+```
+sudo python3 eth_speed_server.py eth0 10.55.0.2
+```
 
 ### Clients
 
@@ -52,11 +62,22 @@ Benchmark script: [eth_speed_client.py](./eth_speed_client.py)
 Usage:
 
 ```
-sudo python3 eth_speed_client.py <INTERFACE> <STREAMS> <SECONDS>
+sudo python3 eth_speed_client.py <IFACE:CLIENT_IP:SERVER_IP[:PORT]> [...] [STREAMS] [SECONDS]
 ```
 
-The script automatically configures the static IP address `10.55.0.2` and uses multiple parallel TCP streams to reach maximum throughput.
+The script configures the specified static IP address on each interface and uses multiple parallel TCP streams per interface to reach maximum throughput.
 
+Example, single interface:
+
+```
+sudo python3 eth_speed_client.py eth0:10.55.0.11:10.55.0.1
+```
+
+Example, two interfaces:
+
+```
+sudo python3 eth_speed_client.py eth0:10.55.0.11:10.55.0.1 eth1:10.55.0.12:10.55.0.2
+```
 
 ## Test Configurations
 
@@ -76,7 +97,7 @@ USB hub: 4-port USB 3.0 hub (self-powered)
 
 ## Results
 
-All results were obtained using **4 TCP streams for 10 seconds** per interface.
+All results were obtained using **4 TCP streams per interface for 10 seconds**.
 
 Tests were performed on idle systems with no additional network traffic.
 
@@ -95,8 +116,9 @@ Results may vary depending on system load, USB devices, kernel version, and adap
 
 | Configuration | Interface(s)            | Throughput (Mbps) |
 | :-----------: | ----------------------- | ----------------- |
-|     `ETH`     | LAN1 (Gigabit Ethernet) | 936               |
-|     `ETH`     | LAN2 (10/100 Ethernet)  | 93.5              |
-|     `USB`     | USB1 (USB 2.0)          | 93.5              |
-|     `HUB`     | USB1 (USB 2.0)          | 93.5              |
+|     `ETH`     | LAN1 (Gigabit Ethernet) | 936.46            |
+|     `ETH`     | LAN2 (10/100 Ethernet)  | 93.65             |
+|     `USB`     | USB1 (USB 2.0)          | TODO              |
+|     `HUB`     | USB1 (USB 2.0)          | TODO              |
+|  `ETH`+`ETH`  | LAN1 + LAN2             | 936.45 + 93.65 = 1030.10 |
 |  `ETH`+`USB`  | LAN1 + USB1             | TODO + TODO       |
