@@ -46,11 +46,11 @@ The script configures the specified static IP address on the selected interface.
 Example, two servers:
 
 ```
-sudo python3 eth_speed_server.py eth0 10.55.0.1
+sudo python3 eth_speed_server.py eth0 10.55.1.1
 ```
 
 ```
-sudo python3 eth_speed_server.py eth0 10.55.0.2
+sudo python3 eth_speed_server.py eth0 10.55.2.1
 ```
 
 ### Clients
@@ -70,13 +70,13 @@ The script configures the specified static IP address on each interface and uses
 Example, single interface:
 
 ```
-sudo python3 eth_speed_client.py eth0:10.55.0.11:10.55.0.1
+sudo python3 eth_speed_client.py eth0:10.55.1.2:10.55.1.1
 ```
 
 Example, two interfaces:
 
 ```
-sudo python3 eth_speed_client.py eth0:10.55.0.11:10.55.0.1 eth1:10.55.0.12:10.55.0.2
+sudo python3 eth_speed_client.py eth0:10.55.1.2:10.55.1.1 eth1:10.55.2.2:10.55.2.1
 ```
 
 ## Test Configurations
@@ -118,7 +118,9 @@ Results may vary depending on system load, USB devices, kernel version, and adap
 | :-----------: | ----------------------- | ----------------- |
 |     `ETH`     | LAN1 (Gigabit Ethernet) | 936.46            |
 |     `ETH`     | LAN2 (10/100 Ethernet)  | 93.65             |
+|  `ETH`+`ETH`  | LAN1 + LAN2             | 936.45 + 93.65 = 1030.10 |
 |     `USB`     | USB1 (USB 2.0)          | TODO              |
 |     `HUB`     | USB1 (USB 2.0)          | TODO              |
-|  `ETH`+`ETH`  | LAN1 + LAN2             | 936.45 + 93.65 = 1030.10 |
 |  `ETH`+`USB`  | LAN1 + USB1             | TODO + TODO       |
+|  `USB`+`USB`  | USB1 + USB2             | TODO + TODO       |
+|  `HUB`+`HUB`  | USB1                    | TODO + TODO       |
