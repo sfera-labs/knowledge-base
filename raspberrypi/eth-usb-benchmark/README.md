@@ -103,24 +103,34 @@ Tests were performed on idle systems with no additional network traffic.
 
 Results may vary depending on system load, USB devices, kernel version, and adapter chipset.
 
-### Raspberry Pi 5
-
-| Configuration | Interface(s)               | Throughput (Mbps) |
-| :-----------: | -------------------------- | ----------------- |
-|     `ETH`     | Gigabit Ethernet           | TODO              |
-|     `USB`     | USB 2.0                    | TODO              |
-|     `USB`     | USB 3.0                    | TODO              |
-|  `ETH`+`USB`  | Gigabit Ethernet + USB 3.0 | TODO + TODO       |
-
 ### Strato Pi Max with CM5
 
-| Configuration | Interface(s)            | Throughput (Mbps) |
-| :-----------: | ----------------------- | ----------------- |
-|     `ETH`     | LAN1 (Gigabit Ethernet) | 936.46            |
-|     `ETH`     | LAN2 (10/100 Ethernet)  | 93.65             |
-|  `ETH`+`ETH`  | LAN1 + LAN2             | 936.45 + 93.65 = 1030.10 |
-|     `USB`     | USB1 (USB 2.0)          | TODO              |
-|     `HUB`     | USB1 (USB 2.0)          | TODO              |
-|  `ETH`+`USB`  | LAN1 + USB1             | TODO + TODO       |
-|  `USB`+`USB`  | USB1 + USB2             | TODO + TODO       |
-|  `HUB`+`HUB`  | USB1                    | TODO + TODO       |
+Interfaces:
+- LAN1: Native Gigabit Ethernet
+- LAN2: 10/100 Ethernet via LAN9514 USB-to-Ethernet bridge
+- USB1, USB2: USB 2.0 via LAN9514 USB hub
+
+| Configuration | Interface(s) | Throughput (Mbps)   |
+| :-----------: | ------------ | ------------------- |
+|     `ETH`     | LAN1         | 936.46              |
+|     `ETH`     | LAN2         | 93.65               |
+|  `ETH`+`ETH`  | LAN1 + LAN2  | 936.45 + 93.65      |
+|     `USB`     | USB1         | 333.62              |
+|     `HUB`     | USB1         | 321.79              |
+|  `ETH`+`USB`  | LAN1 + USB1  | 936.44 + 333.13     |
+|  `ETH`+`USB`  | LAN2 + USB1  | 73.59 + 266.71      |
+
+### Raspberry Pi 5
+
+Interfaces:
+- LAN: Gigabit Ethernet
+- USB1, USB2: USB 2.0
+- USB3, USB4: USB 3.0
+
+| Configuration | Interface(s) | Throughput (Mbps)   |
+| :-----------: | ------------ | ------------------- |
+|     `ETH`     | LAN          | TODO                |
+|     `USB`     | USB1         | TODO                |
+|     `USB`     | USB3         | TODO                |
+|  `ETH`+`USB`  | LAN + USB1   | TODO                |
+|  `ETH`+`USB`  | LAN + USB3   | TODO                |
