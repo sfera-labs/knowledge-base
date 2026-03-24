@@ -131,7 +131,7 @@ Interfaces:
 | :-----------: | ------------ | ------------------- |
 |     `ETH`     | LAN          | 936                 |
 |     `USB`     | USB1         | 936                 |
-|     `USB`     | USB3         | 302                 |
+|     `USB`     | USB3         | 300                 |
 |  `ETH`+`USB`  | LAN + USB1   | 936 + 936           |
 |  `ETH`+`USB`  | LAN + USB3   | 936 + 302           |
 |  `USB`+`USB`  | USB1 + USB2  | 936 + 936           |
