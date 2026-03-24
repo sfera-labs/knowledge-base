@@ -88,11 +88,10 @@ sudo python3 eth_speed_client.py eth0:10.55.1.2:10.55.1.1 eth1:10.55.2.2:10.55.2
 |  `HUB`  | Ethernet via USB Ethernet adapter connected through a USB hub |
 | `X`+`Y` | Parallel test with configurations `X` and `Y` from above      |
 
-Ethernet cable: Cat 5e UTP
-
-USB Ethernet adapter: USB 3.0 Gigabit Ethernet adapter
-
-USB hub: 4-port USB 3.0 hub (self-powered)
+- Ethernet cable: Cat 5e UTP
+- USB Ethernet adapter 1: LogiLink CU0401 USB 3.0 Gigabit Ethernet (1.5 m)
+- USB Ethernet adapter 2: LogiLink CU0406 USB 3.0 Gigabit Ethernet (10.0 m)
+- USB hub: 4-port USB 3.0 hub (self-powered)
 
 
 ## Results
@@ -112,25 +111,47 @@ Interfaces:
 
 | Configuration | Interface(s) | Throughput (Mbps)   |
 | :-----------: | ------------ | ------------------- |
-|     `ETH`     | LAN1         | 936.46              |
-|     `ETH`     | LAN2         | 93.65               |
-|  `ETH`+`ETH`  | LAN1 + LAN2  | 936.45 + 93.65      |
-|     `USB`     | USB1         | 333.62              |
-|     `HUB`     | USB1         | 321.79              |
-|  `ETH`+`USB`  | LAN1 + USB1  | 936.44 + 333.13     |
-|  `ETH`+`USB`  | LAN2 + USB1  | 73.59 + 266.71      |
+|     `ETH`     | LAN1         | 936                 |
+|     `ETH`     | LAN2         | 94                  |
+|  `ETH`+`ETH`  | LAN1 + LAN2  | 936 + 94            |
+|     `USB`     | USB1         | 341                 |
+|     `HUB`     | USB1         | 331                 |
+|  `ETH`+`USB`  | LAN1 + USB1  | 936 + 342           |
+|  `ETH`+`USB`  | LAN2 + USB1  | 69 + 276            |
+|  `USB`+`USB`  | USB1 + USB2  | 175 + 174           |
 
-### Raspberry Pi 5
+### Raspberry Pi 4B or 5
 
 Interfaces:
 - LAN: Gigabit Ethernet
-- USB1, USB2: USB 2.0
-- USB3, USB4: USB 3.0
+- USB1, USB2: USB 3.0
+- USB3, USB4: USB 2.0
 
 | Configuration | Interface(s) | Throughput (Mbps)   |
 | :-----------: | ------------ | ------------------- |
-|     `ETH`     | LAN          | TODO                |
-|     `USB`     | USB1         | TODO                |
-|     `USB`     | USB3         | TODO                |
-|  `ETH`+`USB`  | LAN + USB1   | TODO                |
-|  `ETH`+`USB`  | LAN + USB3   | TODO                |
+|     `ETH`     | LAN          | 936                 |
+|     `USB`     | USB1         | 936                 |
+|     `USB`     | USB3         | 302                 |
+|  `ETH`+`USB`  | LAN + USB1   | 936 + 936           |
+|  `ETH`+`USB`  | LAN + USB3   | 936 + 302           |
+|  `USB`+`USB`  | USB1 + USB2  | 936 + 936           |
+|  `USB`+`USB`  | USB1 + USB3  | 936 + 300           |
+|  `USB`+`USB`  | USB3 + USB4  | 300 + 300           |
+|     `HUB`     | USB1         | 936                 |
+|  `HUB`+`HUB`  | USB1         | 936 + 936           |
+|  `HUB`+`HUB`  | USB3         | 162 + 162           |
+
+### Raspberry Pi 3B+
+
+Interfaces:
+- LAN: Gigabit Ethernet over USB 2.0
+- USB1, USB2, USB3, USB4: USB 2.0
+
+| Configuration | Interface(s) | Throughput (Mbps)   |
+| :-----------: | ------------ | ------------------- |
+|     `ETH`     | LAN          | 321                 |
+|     `USB`     | USB1         | 327                 |
+|  `ETH`+`USB`  | LAN + USB1   | 156 + 177           |
+|  `USB`+`USB`  | USB1 + USB2  | 157 + 158           |
+|     `HUB`     | USB1         | 286                 |
+|  `HUB`+`HUB`  | USB1         | 152 + 152           |
