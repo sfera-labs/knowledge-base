@@ -13,7 +13,6 @@ args = sys.argv[1:]
 streams = 4
 duration = 10
 
-# Parse optional trailing args: [streams] [duration]
 if len(args) >= 1 and args[-1].isdigit():
     duration = int(args[-1])
     args = args[:-1]
@@ -27,12 +26,13 @@ if not args:
     print("  eth_speed_client.py <iface:client_ip:server_ip[:port]> [...] [streams] [seconds]")
     sys.exit(1)
 
-# Parse interface configs
 interfaces = []
+
 for cfg in args:
     parts = cfg.split(":")
+
     if len(parts) < 3:
-        raise ValueError("Invalid config: " + cfg)
+        raise ValueError(f"Invalid config: {cfg}")
 
     iface = parts[0]
     ip_client = parts[1]
@@ -45,54 +45,107 @@ totals = {iface: 0 for iface, _, _, _ in interfaces}
 locks = {iface: threading.Lock() for iface, _, _, _ in interfaces}
 stops = {iface: False for iface, _, _, _ in interfaces}
 
-# Configure interfaces
 for iface, ip_client, ip_server, port in interfaces:
-    subprocess.run(["ip","addr","flush","dev",iface], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["ip","addr","add",ip_client+"/24","dev",iface])
-    subprocess.run(["ip","link","set",iface,"up"])
+    subprocess.run(
+        ["ip", "addr", "flush", "dev", iface],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=True,
+    )
+
+    subprocess.run(
+        ["ip", "addr", "add", ip_client + "/24", "dev", iface],
+        check=True,
+    )
+
+    subprocess.run(
+        ["ip", "link", "set", iface, "up"],
+        check=True,
+    )
+
     print(f"Interface {iface} configured with {ip_client} -> {ip_server} port {port}")
 
-# Connection sync
 connect_count = 0
 connect_lock = threading.Lock()
 connect_event = threading.Event()
+error_event = threading.Event()
+
 expected = len(interfaces) * streams
+errors = []
+
 
 def worker(iface, ip_server, port):
     global connect_count
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.setsockopt(socket.SOL_SOCKET, 25, iface.encode())
-    s.connect((ip_server, port))
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    with connect_lock:
-        connect_count += 1
-        if connect_count == expected:
+        try:
+            s.setsockopt(
+                socket.SOL_SOCKET,
+                socket.SO_BINDTODEVICE,
+                (iface + "\0").encode(),
+            )
+        except AttributeError:
+            s.setsockopt(
+                socket.SOL_SOCKET,
+                25,
+                (iface + "\0").encode(),
+            )
+
+        s.connect((ip_server, port))
+
+        with connect_lock:
+            connect_count += 1
+            if connect_count == expected:
+                connect_event.set()
+
+        while not stops[iface]:
+            data = s.recv(CHUNK)
+
+            if not data:
+                break
+
+            with locks[iface]:
+                totals[iface] += len(data)
+
+    except Exception as e:
+        with connect_lock:
+            errors.append(f"{iface}: {e}")
+            error_event.set()
             connect_event.set()
 
-    while not stops[iface]:
-        data = s.recv(CHUNK)
-        if not data:
-            break
-        with locks[iface]:
-            totals[iface] += len(data)
+    finally:
+        try:
+            s.close()
+        except:
+            pass
+
 
 threads = []
 
 for iface, _, ip_server, port in interfaces:
     for _ in range(streams):
-        t = threading.Thread(target=worker, args=(iface, ip_server, port))
+        t = threading.Thread(
+            target=worker,
+            args=(iface, ip_server, port),
+            daemon=True,
+        )
         t.start()
         threads.append(t)
 
 connect_event.wait()
 
-# Warm-up (ignored)
+if error_event.is_set():
+    for e in errors:
+        print(e)
+    sys.exit(1)
+
 time.sleep(1)
 
-# Reset counters
 for iface in totals:
-    totals[iface] = 0
+    with locks[iface]:
+        totals[iface] = 0
 
 last = time.monotonic()
 last_bytes = {iface: 0 for iface in totals}
@@ -102,7 +155,6 @@ samples_total = []
 
 start = last
 
-# Measurement loop
 while time.monotonic() - start < duration:
     time.sleep(1)
 
@@ -117,9 +169,9 @@ while time.monotonic() - start < duration:
             now_bytes = totals[iface]
 
         rate = (now_bytes - last_bytes[iface]) * 8 / delta / 1e6
+
         per_iface_rate[iface] = rate
         total_rate += rate
-
         last_bytes[iface] = now_bytes
 
     for iface in totals:
@@ -127,24 +179,21 @@ while time.monotonic() - start < duration:
         print(f"{iface}: {per_iface_rate[iface]:.1f} Mbps", end="  ")
 
     samples_total.append(total_rate)
+
     print(f"| Total: {total_rate:.1f} Mbps")
 
     last = now
 
-# Stop workers
 for iface in stops:
     stops[iface] = True
 
 for t in threads:
-    t.join()
+    t.join(timeout=1)
 
 print("\nFinal results:")
 
-grand_total = 0
-
 for iface in samples:
     avg = sum(samples[iface]) / len(samples[iface]) if samples[iface] else 0
-    grand_total += avg
     print(f"{iface}: {avg:.2f} Mbps")
 
 total_avg = sum(samples_total) / len(samples_total) if samples_total else 0
